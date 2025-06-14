@@ -1,15 +1,18 @@
-package main
+package books_test
 
-import "testing"
+import (
+	"books"
+	"testing"
+)
 
 func TestBookToString_FormatsBookInfoAsString(t *testing.T) {
-	input := Book{
+	input := books.Book{
 		Title:  "Homage to Catalonia",
 		Author: "George Orwell",
 		Copies: 15,
 	}
 	exp := "Homage to Catalonia by George Orwell (copies: 15)"
-	resp := BookToString(input)
+	resp := books.BookToString(input)
 	if exp != resp {
 		t.Fatalf("expected %v but got %v", exp, resp)
 	}
