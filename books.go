@@ -20,7 +20,7 @@ var catalog = []Book{
 		Title:  "Brave New World",
 		Author: "Aldous Huxley",
 		Copies: 5,
-		ID:     "def",
+		ID:     "xyz",
 	},
 }
 
