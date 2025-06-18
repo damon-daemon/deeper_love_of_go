@@ -2,6 +2,7 @@ package books_test
 
 import (
 	"books"
+	"cmp"
 	"slices"
 	"testing"
 )
@@ -34,13 +35,18 @@ func TestGetAllBooks_ReturnsAllBooks(t *testing.T) {
 			Title:  "Brave New World",
 			Author: "Aldous Huxley",
 			Copies: 5,
-			ID:     "def",
+			ID:     "xyz",
 		},
 	}
 	resp := books.GetAllBooks()
-
-	if !slices.Equal(exp, resp) {
-		t.Fatalf("expected %#v but got %#v", exp, resp)
+	slices.SortFunc(resp, func(a, b books.Book) int {
+		return cmp.Compare(a.Author, b.Author)
+	})
+	slices.SortFunc(exp, func(a, b books.Book) int {
+		return cmp.Compare(a.Author, b.Author)
+	})
+	if !slices.Equal(resp, exp) {
+		t.Fatalf("want %#v, got %#v", exp, resp)
 	}
 }
 
