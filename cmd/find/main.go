@@ -13,10 +13,10 @@ func main() {
 		return
 	}
 	ID := os.Args[1]
-	book, ok := books.GetBook(catalog, ID)
+	book, ok := catalog.GetBook(ID)
 	if !ok {
 		fmt.Println("Book not found")
 		return
 	}
-	fmt.Println(books.BookToString(book))
+	fmt.Println(book)
 }
