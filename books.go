@@ -48,3 +48,11 @@ func GetCatalog() Catalog {
 		},
 	}
 }
+
+func (book *Book) SetCopies(copies int) error {
+	if copies < 0 {
+		return fmt.Errorf("negative number of copies: %d", copies)
+	}
+	book.Copies = copies
+	return nil
+}
