@@ -7,6 +7,23 @@ import (
 	"testing"
 )
 
+func getTestCatalog() map[string]books.Book {
+	return map[string]books.Book{
+		"abc": {
+			Title:  "1984",
+			Author: "George Orwell",
+			Copies: 10,
+			ID:     "abc",
+		},
+		"xyz": {
+			Title:  "Brave New World",
+			Author: "Aldous Huxley",
+			Copies: 5,
+			ID:     "xyz",
+		},
+	}
+}
+
 func TestBookToString_FormatsBookInfoAsString(t *testing.T) {
 	t.Parallel()
 	input := books.Book{
@@ -24,6 +41,7 @@ func TestBookToString_FormatsBookInfoAsString(t *testing.T) {
 
 func TestGetAllBooks_ReturnsAllBooks(t *testing.T) {
 	t.Parallel()
+	catalog := getTestCatalog()
 	exp := []books.Book{
 		{
 			Title:  "1984",
@@ -38,7 +56,7 @@ func TestGetAllBooks_ReturnsAllBooks(t *testing.T) {
 			ID:     "xyz",
 		},
 	}
-	resp := books.GetAllBooks()
+	resp := books.GetAllBooks(catalog)
 	slices.SortFunc(resp, func(a, b books.Book) int {
 		return cmp.Compare(a.Author, b.Author)
 	})
@@ -52,13 +70,14 @@ func TestGetAllBooks_ReturnsAllBooks(t *testing.T) {
 
 func TestGetBook_ReturnBook(t *testing.T) {
 	t.Parallel()
+	catalog := getTestCatalog()
 	exp := books.Book{
 		ID:     "abc",
 		Title:  "1984",
 		Author: "George Orwell",
 		Copies: 10,
 	}
-	resp, ok := books.GetBook("abc")
+	resp, ok := books.GetBook(catalog, "abc")
 	if !ok {
 		t.Fatalf("book not found")
 	}
@@ -69,8 +88,30 @@ func TestGetBook_ReturnBook(t *testing.T) {
 
 func TestGetBook_ReturnFalseWhenBookNotFoun(t *testing.T) {
 	t.Parallel()
-	_, ok := books.GetBook("does-not-exist")
+	catalog := getTestCatalog()
+	_, ok := books.GetBook(catalog, "does-not-exist")
 	if ok {
 		t.Fatal("want false for nonexistent ID, got true")
+	}
+}
+
+func TestAddBook_AppendsBookToCatalog(t *testing.T) {
+	t.Parallel()
+	catalog := getTestCatalog()
+	_, ok := books.GetBook(catalog, "123")
+	if ok {
+		t.Fatal("book arleady present")
+	}
+	newBook := books.Book{
+		ID:     "123",
+		Title:  "Animal Farm",
+		Author: "George Orwell",
+		Copies: 8,
+	}
+	books.AddBook(catalog, newBook)
+
+	_, ok = books.GetBook(catalog, "123")
+	if !ok {
+		t.Fatal("added book not found")
 	}
 }
